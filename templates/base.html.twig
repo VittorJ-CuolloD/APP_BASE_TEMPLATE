@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
+		<link
+		rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+		{# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+		{% block stylesheets %}
+			<link rel="shortcut icon" href="#">
+			<link rel="stylesheet" href="{{ asset('Libraries/MDB/css/mdb.min.css') }}"/>
+			<link rel="stylesheet" href="{{ asset('Libraries/FontAwesome/css/all.min.css') }}"/>
+			<link rel="stylesheet" href="{{ asset('Libraries/GDPR/dist/style.css') }}"/>
+			<link rel="stylesheet" href="{{ asset('css/default-styles.css') }}"/>
+		{% endblock %}
+		{% block javascripts %}
+			<script src="{{ asset('Libraries/MDB/js/mdb.min.js') }}"></script>
+			<script src="{{ asset('Libraries/FontAwesome/js/all.min.js') }}"></script>
+			<script src="{{ asset('Libraries/SweetAlert/sweetalert.all.min.js') }}"></script>
+			<script src="{{ asset('Libraries/GDPR/dist/script.js') }}"></script>
+			<script src="{{ asset('Libraries/GDPR/src/langs/es.js') }}"></script>
+			<script src="{{ asset('js/backoffice/backoffice.js') }}"></script>
+		{% endblock %}
+	</head>
+	<body>
+		{% include "includes/header.html.twig" %}
+		{% block body %}{% endblock %}
+		{% include "includes/footer.html.twig" %}
+	</body>
+</html>

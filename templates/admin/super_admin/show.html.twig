@@ -1,0 +1,58 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Admin | {{ admin.name }}{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid page">
+
+        <h1 class="admin-title">Administrador | {{ admin.name }}</h1>
+
+        <div class="mx-auto">
+            <div class="text-center">
+                <img src="{{ asset('uploads/admin/profile-pictures/') }}{{ admin.image }}" class="img-fluid my-3">
+            </div>
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>ID</th>
+                    <td>{{ admin.id }}</td>
+                </tr>
+                <tr>
+                    <th>Nombre</th>
+                    <td>{{ admin.name }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ admin.email }}</td>
+                </tr>
+                <tr>
+                    <th>Roles</th>
+                    <td>{{ admin.roles ? admin.roles|json_encode : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Active</th>
+                    <td>
+                        {% if admin.active %}
+                            <a href="{{ path('admin_manager_disable',{'id':admin.id}) }}">
+                                <i class="fas fa-check-circle"></i></a>
+                        {% else %}
+                            <a href="{{ path('admin_manager_enable',{'id':admin.id}) }}">
+                                <i class="fas fa-times-circle"></i></a>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Registrado en:</th>
+                    <td>{{ admin.registeredAt ? admin.registeredAt|date('d-m-Y H:i:s') : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Actualizado en:</th>
+                    <td>{{ admin.registeredAt ? admin.registeredAt|date('d-m-Y H:i:s') : '' }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>highlightMenu("Administradores");</script>
+{% endblock %}

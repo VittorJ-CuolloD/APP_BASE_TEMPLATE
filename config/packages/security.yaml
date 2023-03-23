@@ -1,0 +1,49 @@
+security:
+  encoders:
+    App\Entity\Admin:
+      algorithm: auto
+    App\Entity\User:
+      algorithm: auto
+  role_hierarchy:
+    ROLE_ADMIN: ROLE_USER
+    ROLE_SUPERADMIN: [ROLE_ADMIN]
+  providers:
+    app_admin_provider:
+      entity:
+        class: App\Entity\Admin
+        property: email
+    app_user_provider:
+      entity:
+        class: App\Entity\User
+        property: email
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+    app_user_domain:
+      pattern: ^/page
+      lazy: true
+      provider: app_user_provider
+      guard:
+        authenticators:
+          - App\Security\UserAuthenticator
+        entry_point: App\Security\UserAuthenticator
+      logout:
+        path: user_logout
+        target: user_login
+    app_admin_domain:
+      pattern: ^/admin
+      lazy: true
+      provider: app_admin_provider
+      guard:
+        authenticators:
+          - App\Security\AdminAuthenticator
+        entry_point: App\Security\AdminAuthenticator
+      logout:
+        path: admin_logout
+        target: admin_login
+  access_control:
+    - { path: ^/admin/manager, roles: ROLE_SUPERADMIN }
+    - { path: ^/admin/(.+), roles: ROLE_ADMIN }
+    #- { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY } RUTA DE REGISTRO DEL USER
+    - { path: ^/page/(.+), roles: ROLE_USER }

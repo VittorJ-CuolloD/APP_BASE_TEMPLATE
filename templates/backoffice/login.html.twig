@@ -1,0 +1,73 @@
+{% extends 'backoffice/base.html.twig' %}
+
+{% block title %}Log in!
+{% endblock %}
+
+{% block body %}
+
+	<div class="h-100 d-flex justify-content-center align-items-center row w-100">
+
+		<form method="post" class="col-12 col-md-4">
+			<h1 class="h3 mb-3 font-weight-normal text-center text-uppercase">INICIAR SESIÓN</h1>
+			{% if error %}
+				<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+			{% endif %}
+
+			{% if app.user %}
+				<div class="mb-3">
+					You are logged in as
+					{{ app.user.userIdentifier }},
+					<a href="{{ path('app_logout') }}">Logout</a>
+				</div>
+			{% endif %}
+
+			<!-- Email input -->
+			<div class="form-outline mb-4">
+				<input type="email" type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control mb-3" autocomplete="email" required autofocus/>
+				<label class="form-label" for="form1Example1">Email address</label>
+			</div>
+
+			<!-- Password input -->
+			<div class="form-outline mb-4">
+				<input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+
+
+				<label class="form-label" for="form1Example2">Password</label>
+			</div>
+
+			<!-- 2 column grid layout for inline styling -->
+
+			<div class="form-check mt-4 w-75 mx-auto">
+				<input class="form-check-input" type="checkbox" value="" id="privacy" required="" autocompleted="">
+				<label class="form-check-label" for="privacy">
+					He leído y acepto las
+					<a href="#" data-mdb-toggle="modal" data-mdb-target="#condiciones-de-uso">
+						condiciones de uso</a>
+					y
+					<a href="#" data-mdb-toggle="modal" data-mdb-target="#politica-de-privacidad">privacidad.</a>
+				</label>
+			</div>
+
+
+			<div class="mt-3 text-center">
+				<div
+					class="col">
+					<!-- Simple link -->
+					<a href="#!">¡He olvidado mi contraseña!</a>
+				</div>
+
+			</div>
+
+			<div class="mt-3 text-center">
+				<span class="txt-registro">¿Aún no te has registrado?
+					<a href="/register">Regístrate aquí</a>.</span>
+			</div>
+
+			<!-- Submit button -->
+			<button type="submit" class="btn btn-dark btn-block mx-auto mt-3">Entrar</button>
+
+			<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+		</form>
+	</div>
+{% endblock %}

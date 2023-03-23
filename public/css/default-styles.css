@@ -1,0 +1,31 @@
+:root {
+    --color-gray: #f8f8f2;
+    --color-green: #009845;
+    --color-darkgreen: #02391c;
+    --color-white: #ffffff;
+    --color-dark: #332D2D;
+}
+
+.navbar,footer {
+    background-color: var(--color-dark) !important;
+    color: white;
+}
+
+html,body{
+    height: 85vh;
+}
+
+.alert{
+    padding-block: .8rem !important;
+}
+
+/* footer {
+    position: fixed;
+    height: 100px;
+    bottom: 0;
+    width: 100%;
+} */
+
+.bg-success,.btn-success{
+    background-color: var(--color-green) !important;
+}

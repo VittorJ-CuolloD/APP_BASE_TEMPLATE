@@ -1,0 +1,12 @@
+form ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+}
+
+form ul li {
+    background-color: #8d0707;
+    color: #fff;
+    width: fit-content;
+    padding: 2px 10px;
+}

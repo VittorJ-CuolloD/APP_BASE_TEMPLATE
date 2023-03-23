@@ -1,0 +1,26 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Editar Usuario
+{% endblock %}
+
+{% block body %}
+	{% if error_edit %}
+		<script>
+			Swal.fire({
+icon: 'error',
+title: '¡Error!',
+text: '{{ error_edit }}',
+confirmButtonColor: "var(--color-green)",
+confirmButtonText: "¡Entendido!"
+});
+		</script>
+	{% endif %}
+	<div class="container-fluid page">
+		<h1 class="admin-title">Editar Usuario</h1>
+		{{ include('admin/front_user/_form.html.twig', {'button_label': 'Actualizar'}) }}
+	</div>
+	<script>
+		MDBForm("user");
+highlightMenu("Usuarios");
+document.getElementById("user_password").removeAttribute("required");
+	</script>
+{% endblock %}

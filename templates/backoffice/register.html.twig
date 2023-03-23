@@ -1,0 +1,75 @@
+{% extends 'backoffice/base.html.twig' %}
+
+{% block title %}Registrar usuario
+{% endblock %}
+
+{% block body %}
+
+
+	<div class="container h-100 d-flex justify-content-center mt-5">
+		<div class="w-50">
+
+			<h1 class="h3 mb-3 font-weight-normal text-center text-uppercase">Registro</h1>
+
+			<p class="txt-registro-2">
+				Rellena los siguientes campos y recibirás un e-mail confirmando tu registro.
+			</p>
+
+			{{ form_start(formulario) }}
+
+			<div class="form-outline mb-4">
+				<div class="form-outline mb-4">
+					{{ form_widget(formulario.name) }}
+					{{ form_label(formulario.name, 'Nombre', {'label_attr': {'class': 'form-label'}}) }}
+
+				</div>
+				<div class="form-outline mb-4">
+					{{ form_widget(formulario.email) }}
+					{{ form_label(formulario.email, 'E-MAIL', {'label_attr': {'class': 'form-label'}}) }}
+				</div>
+				<div class="form-outline mb-4">
+					{{ form_widget(formulario.password.first) }}
+					{{ form_label(formulario.password.first, 'Contraseña', {'label_attr': {'class': 'form-label'}}) }}
+				</div>
+				<div class="form-outline mb-4">
+					{{ form_widget(formulario.password.second) }}
+					{{ form_label(formulario.password.second, 'Confirmar contraseña', {'label_attr': {'class': 'form-label'}}) }}
+				</div>
+
+				<button type="submit" class="btn btn-success btn-block mb-4">Registrar</button>
+
+			</div>
+
+			{{ form_end(formulario) }}
+
+			<div class="my-custom-class-for-errors">
+
+				{{ form_errors(formulario) }}
+
+				{% for message in app.flashes('success') %}
+					<div class="flash-notice alert alert-success mt-2">
+						<span class="form-error-icon badge badge-success text-uppercase">Success</span>
+						{{ message }}
+					</div>
+				{% endfor %}
+
+				{% for message in app.flashes('errorEmail') %}
+					<div class="flash-notice alert alert-danger mt-2">
+						<span class="form-error-icon badge badge-danger text-uppercase">Error</span>
+						{{ message }}
+					</div>
+				{% endfor %}
+
+				{% for message in app.flashes('errorPasswordConfirm') %}
+					<div class="flash-notice alert alert-danger mt-2">
+						<span class="form-error-icon badge badge-danger text-uppercase">Error</span>
+						{{ message }}
+					</div>
+				{% endfor %}
+
+			</div>
+
+		</div>
+	</div>
+
+{% endblock %}

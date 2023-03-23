@@ -1,0 +1,61 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Usuario |
+	{{ user.name }}
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid page">
+
+		<h1 class="admin-title mb-5">Usuario |
+			{{ user.name }}</h1>
+
+		<div class="mx-auto">
+			<table class="table">
+				<tbody>
+					<tr>
+						<th>ID</th>
+						<td>{{ user.id }}</td>
+					</tr>
+					<tr>
+						<th>Nombre</th>
+						<td>{{ user.name }}</td>
+					</tr>
+					<tr>
+						<th>Email</th>
+						<td>{{ user.email }}</td>
+					</tr>
+					<tr>
+						<th>Roles</th>
+						<td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+					</tr>
+					<tr>
+						<th>Active</th>
+						<td>
+							{% if user.active %}
+								<a href="{{ path('admin_user_disable',{'id':user.id}) }}">
+									<i class="fas fa-check-circle"></i>
+								</a>
+							{% else %}
+								<a href="{{ path('admin_user_enable',{'id':user.id}) }}">
+									<i class="fas fa-times-circle"></i>
+								</a>
+							{% endif %}
+						</td>
+					</tr>
+					<tr>
+						<th>Registrado en:</th>
+						<td>{{ user.registeredAt ? user.registeredAt|date('d/m/Y H:i:s') : '' }}</td>
+					</tr>
+					<tr>
+						<th>Actualizado en:</th>
+						<td>{{ user.registeredAt ? user.registeredAt|date('d/m/Y H:i:s') : '' }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<script>
+		highlightMenu("Usuarios");
+	</script>
+{% endblock %}

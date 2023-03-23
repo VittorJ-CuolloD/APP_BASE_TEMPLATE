@@ -1,0 +1,31 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Editar Administrador{% endblock %}
+
+{% block body %}
+    <style>
+        .vich-image {
+            display: none;
+        }
+    </style>
+    {% if error_edit %}
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: '¡Error!',
+                text: '{{ error_edit }}',
+                confirmButtonColor: "var(--color-green)",
+                confirmButtonText: "¡Entendido!"
+            });
+        </script>
+    {% endif %}
+    <div class="container-fluid page">
+        <h1 class="admin-title">Editar Administrador</h1>
+        {{ include('admin/super_admin/_form.html.twig', {'button_label': 'Actualizar'}) }}
+    </div>
+    <script>
+        MDBForm("admin");
+        highlightMenu("Administradores");
+        document.getElementById("admin_password").removeAttribute("required");
+    </script>
+{% endblock %}

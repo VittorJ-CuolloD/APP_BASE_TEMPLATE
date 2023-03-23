@@ -1,0 +1,90 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Home dashboard
+{% endblock %}
+
+{% block body %}
+
+	<div class="container-fluid my-3 p-4 page">
+		<div>
+
+			<nav aria-label="breadcrumb bg-light">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item">
+						<a href="{{path("admin_index")}}" class="text-success">Home</a>
+					</li>
+					<li class="breadcrumb-item active" aria-current="page">Usuarios</li>
+				</ol>
+			</nav>
+
+		</div>
+		<h1 class="text-center text-uppercase mb-5">Usuarios</h1>
+
+		<div class="action-buttons">
+
+			<a href="{{ path('admin_user_new') }}" class="btn btn-outline-success float-start">
+				Registrar Usuario</a>
+			<a href="{{ path('admin_user_excel') }}" class="btn btn-outline-success float-end ms-3">
+
+				Excel</a>
+		</div>
+
+		<div class="table-container" id="datatable">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Nombre</th>
+						<th>Email</th>
+						<th>Roles</th>
+						<th>Registro</th>
+						<th>Última Actualización</th>
+						<th>Activo</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for user in users %}
+						<tr>
+							<td>{{ user.id }}</td>
+							<td>{{ user.name }}</td>
+							<td>{{ user.email }}</td>
+							<td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+							<td>{{ user.registeredAt ? user.registeredAt|date('d-m-Y H:i:s') : '' }}</td>
+							<td>{{ user.updatedAt ? user.updatedAt|date('d-m-Y H:i:s') : '' }}</td>
+							<td>
+								{% if user.active %}
+
+									<a href="{{ path('admin_user_disable',{'id':user.id}) }}" class="btn btn-success bt-sm btn-floating mx-auto d-flex align-items-center justify-content-center">
+										<i class="fas fa-check"></i>
+									</a>
+								{% else %}
+									<a href="{{ path('admin_user_enable',{'id':user.id}) }}" class="btn btn-danger bt-sm btn-floating mx-auto d-flex align-items-center justify-content-center">
+										<i class="fas fa-close"></i>
+									</a>
+								{% endif %}
+							</td>
+							<td>
+								<div class='row'>
+									<div class='col-4'>
+										<a href="{{ path('admin_user_show',{'id':user.id}) }}" class="btn btn-outline-primary w-100" data-mdb-ripple-color="dark">
+											Ver
+										</a>
+									</div>
+									<div class='col-4'>
+										<a href="{{ path('admin_user_edit',{'id':user.id}) }}" class="btn btn-outline-warning w-100" data-mdb-ripple-color="dark">
+											Editar
+										</a>
+									</div>
+									<div class='col-4'>
+										{% include 'admin/front_user/_delete_form.html.twig' %}
+									</div>
+								</div>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endblock %}
