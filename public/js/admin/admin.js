@@ -32,7 +32,8 @@ function loadResources() {
     }
     if (document.querySelector("#datatable") != null) {
         let datatable = document.querySelector("#datatable");
-        const instance = new mdb.Datatable(datatable);
+
+        const instance = new mdb.Datatable(datatable,{},{ hover: true });
 
         let div = document.createElement("div");
         div.className = "d-flex justify-content-end";

@@ -15,6 +15,11 @@ html,body{
     height: 85vh;
 }
 
+.datatable-header{
+    background-color: var(--color-green) !important;
+    color: white !important;
+}
+
 .alert{
     padding-block: .8rem !important;
 }
