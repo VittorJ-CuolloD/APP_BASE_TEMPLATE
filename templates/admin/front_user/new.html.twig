@@ -4,24 +4,15 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container-fluid page my-5">
-		<div>
 
-			<nav aria-label="breadcrumb bg-light">
-				<ol class="breadcrumb">
-					<li class="breadcrumb-item">
-						<a href="{{path("admin_index")}}" class="text-success">Home</a>
-					</li>
-					<li class="breadcrumb-item">
-						<a href="{{path("admin_user_index")}}" class="text-success">Usuarios</a>
-					</li>
-					<li class="breadcrumb-item active" aria-current="page">Crear</li>
-				</ol>
-			</nav>
+	<div class="container-fluid">
+		<div class="row justify-content-center bg-light">
+			<div class="col-12 col-md-4">
+				<h1 class="h3 my-3 font-weight-normal text-center text-uppercase">Registrar usuario</h1>
 
+				{{ include('admin/front_user/_form.html.twig') }}
+			</div>
 		</div>
-		<h1 class="admin-title text-center text-uppercase">Registrar Usuario</h1>
-		{{ include('admin/front_user/_form.html.twig') }}
 	</div>
 
 {% endblock %}

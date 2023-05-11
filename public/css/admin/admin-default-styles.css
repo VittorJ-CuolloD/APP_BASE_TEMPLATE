@@ -166,7 +166,7 @@ table th, table td {
 }
 
 table th {
-    background-color: var(--color-green) !important;
+    background-color: var(--mdb-dark) !important;
     color: #fff !important;
     font-family: 'Raleway-Bold', sans-serif !important;
     font-size: 18px !important;

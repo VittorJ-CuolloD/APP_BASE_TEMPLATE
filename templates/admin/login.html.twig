@@ -5,51 +5,60 @@
 
 {% block body %}
 
-	<div class="row w-100 d-flex justify-content-center align-items-center h-100">
+	<div class="container-fluid">
+		<div class="row justify-content-center mt-5">
 
-		<form method="post" class="col-sm-12 col-md-4">
+			<div class="col-12 col-md-4">
 
-			<div class="text-center bg-success py-2 mb-3" style="border-top-right-radius:15px;border-top-left-radius:15px">
+				<form method="post" class="border mt-5 bg-white g-opacity-50 rounded-5 p-4 mx-auto">
+					<div class="text-center mb-3">
 
-				<img src="{{ asset("img/doctaforum.png") }}" class="img-fluid" alt="MDB Logo" loading="lazy"/>
+						<img src="{{ asset("img/favicon-doctaforum.png") }}" class="img-fluid" width="60" alt="MDB Logo" loading="lazy"/>
+
+					</div>
+
+					<h1 class="h3 mb-3 font-weight-normal text-center text-uppercase">INICIAR SESIÓN</h1>
+
+					{% if error %}
+						<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+					{% endif %}
+
+					{% if app.user %}
+						<div class="mb-3">
+							You are logged in as
+							{{ app.user.userIdentifier }},
+							<a href="{{ path('app_logout') }}">Logout</a>
+						</div>
+					{% endif %}
+
+					<!-- Email input -->
+					<div class="form-outline mb-4">
+						<i class="fas fa-envelope trailing"></i>
+						<input type="email" type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control mb-3" autocomplete="email" required autofocus/>
+						<label class="form-label" for="form1Example1">Email address</label>
+					</div>
+
+					<!-- Password input -->
+					<div class="form-outline mb-4">
+						<i class="fas fa-lock trailing"></i>
+						<input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+
+
+						<label class="form-label" for="form1Example2">Password</label>
+					</div>
+
+					<!-- 2 column grid layout for inline styling -->
+
+					<!-- Submit button -->
+					<button type="submit" class="btn btn-success btn-block mx-auto mt-3">Entrar</button>
+
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+				</form>
+
 
 			</div>
-
-			{% if error %}
-				<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-			{% endif %}
-
-			{% if app.user %}
-				<div class="mb-3">
-					You are logged in as
-					{{ app.user.userIdentifier }},
-					<a href="{{ path('app_logout') }}">Logout</a>
-				</div>
-			{% endif %}
-
-			<!-- Email input -->
-			<div class="form-outline mb-4">
-				<input type="email" type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control mb-3" autocomplete="email" required autofocus/>
-				<label class="form-label" for="form1Example1">Email address</label>
-			</div>
-
-			<!-- Password input -->
-			<div class="form-outline mb-4">
-				<input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-
-
-				<label class="form-label" for="form1Example2">Password</label>
-			</div>
-
-			<!-- 2 column grid layout for inline styling -->
-
-			<!-- Submit button -->
-			<button type="submit" class="btn btn-success btn-block mx-auto mt-3">Entrar</button>
-
-			<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-		</form>
-
+		</div>
 	</div>
 
 {% endblock %}

@@ -14,13 +14,16 @@ confirmButtonText: "¡Entendido!"
 });
 		</script>
 	{% endif %}
-	<div class="container-fluid page">
-		<h1 class="admin-title">Editar Usuario</h1>
-		{{ include('admin/front_user/_form.html.twig', {'button_label': 'Actualizar'}) }}
+
+	<div class="container-fluid">
+
+		<div class="row justify-content-center bg-light">
+			<div class="col-12 col-md-4">
+				<h1 class="h3 my-3 font-weight-normal text-center text-uppercase">Editar usuario</h1>
+
+				{{ include('admin/front_user/_form.html.twig', {'button_label': 'Actualizar'}) }}
+			</div>
+		</div>
 	</div>
-	<script>
-		MDBForm("user");
-highlightMenu("Usuarios");
-document.getElementById("user_password").removeAttribute("required");
-	</script>
+
 {% endblock %}

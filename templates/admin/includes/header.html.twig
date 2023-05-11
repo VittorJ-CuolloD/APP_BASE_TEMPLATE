@@ -5,7 +5,7 @@
 	<div
 		class="container-fluid">
 		<!-- Toggle button -->
-		<button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<button class="navbar-toggler text-white" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<i class="fas fa-bars"></i>
 		</button>
 
@@ -17,9 +17,12 @@
 				<img src="{{ asset("img/doctaforum.png") }}" class="img-fluid" alt="MDB Logo" loading="lazy"/>
 			</a>
 
-			{% if is_granted('ROLE_SUPERADMIN') %}
-				<!-- Left links -->
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+			<!-- Left links -->
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+				{% if is_granted('ROLE_ADMIN') %}
+
 					<li class="nav-item">
 						<a class="nav-link text-white" href="{{path('admin_index')}}">Inicio</a>
 					</li>
@@ -27,19 +30,47 @@
 					<li class="nav-item">
 						<a class="nav-link text-white" href="{{path('admin_user_index')}}">Usuario</a>
 					</li>
+
+				{% endif %}
+				{% if is_granted('ROLE_SUPERADMIN') %}
+
 					<li class="nav-item">
 						<a class="nav-link text-white" href="{{path('admin_manager_index')}}">Administradores</a>
 					</li>
-				</ul>
 
-			{% endif %}
+				{% endif %}
+			</ul>
+
 		</div>
 		<!-- Collapsible wrapper -->
+		{% if is_granted('ROLE_ADMIN') %}
+			<div>
+				<ul
+					class="navbar-nav">
+					<!-- Avatar -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+							<img onerror="this.onerror=null;this.src='/img/profile-default.png';" src="{{app.user.image != '' ? "/uploads/profile-pictures/#{app.user.image}":'/img/profile-default.png'}}" class="rounded-circle" height="22" alt="Avatar default" loading="lazy"/>
+						</a>
+						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+							<li>
+								<a class="dropdown-item" href="{{ path('admin_edit',{'id':app.user.id}) }}">
+									<i class="fas fa-user"></i>
+									&nbsp;Mi perfil</a>
+							</li>
 
-		<div>
-			<a class="nav-link text-white" href="{{ path('admin_logout') }}">Logout</a>
-		</div>
+							<li><hr class="dropdown-divider"/></li>
+							<li>
 
+								<a class="dropdown-item" href="{{ path('admin_logout') }}">
+									<i class="fas fa-power-off"></i>
+									&nbsp;Cerrar sesión</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		{% endif %}
 	</div>
 	<!-- Container wrapper -->
 </nav>

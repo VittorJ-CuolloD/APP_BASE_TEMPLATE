@@ -36,13 +36,16 @@ function loadResources() {
         const instance = new mdb.Datatable(datatable,{},{ hover: true });
 
         let div = document.createElement("div");
-        div.className = "d-flex justify-content-end";
-        div.innerHTML = "<div class='input-group mb-4 w-auto datatable-search'>" +
-            "                <input type='text' class='form-control' id='advanced-search-input' placeholder='Buscar'/>" +
-            "                <button class='btn btn-success' id='advanced-search-button' type='button'>" +
-            "                    <i class='fa fa-search'></i>" +
-            "                </button>" +
-            "            </div>";
+        div.className = "d-flex justify-content-end align-items-center w-100";
+        div.innerHTML = 
+            "          <div class='col-12 col-sm-6 col-md-3 col-lg-2'>"+
+            "               <div class=' input-group datatable-search my-2'>" +
+                "                <input type='text' class='form-control' id='advanced-search-input' placeholder='Buscar'/>" +
+                "                <button class='btn btn-success' id='advanced-search-button' type='button'>" +
+                "                    <i class='fa fa-search'></i>" +
+                "                </button>" +
+            "               </div>"+
+            "           </div>";
         datatable.parentNode.insertBefore(div, datatable);
 
         const searchInput = document.getElementById('advanced-search-input');

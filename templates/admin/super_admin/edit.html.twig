@@ -1,31 +1,46 @@
-{% extends 'base_admin.html.twig' %}
+{% extends 'admin/base.html.twig' %}
 
-{% block title %}Editar Administrador{% endblock %}
+{% block title %}Editar Administrador
+{% endblock %}
 
 {% block body %}
-    <style>
-        .vich-image {
-            display: none;
-        }
-    </style>
-    {% if error_edit %}
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: '¡Error!',
-                text: '{{ error_edit }}',
-                confirmButtonColor: "var(--color-green)",
-                confirmButtonText: "¡Entendido!"
-            });
-        </script>
-    {% endif %}
-    <div class="container-fluid page">
-        <h1 class="admin-title">Editar Administrador</h1>
-        {{ include('admin/super_admin/_form.html.twig', {'button_label': 'Actualizar'}) }}
-    </div>
-    <script>
-        MDBForm("admin");
-        highlightMenu("Administradores");
-        document.getElementById("admin_password").removeAttribute("required");
-    </script>
+	<style>
+		.vich-image {
+			display: none;
+		}
+	</style>
+	{% if error_edit %}
+		<script>
+			Swal.fire({
+icon: 'error',
+title: '¡Error!',
+text: '{{ error_edit }}',
+confirmButtonColor: "var(--color-green)",
+confirmButtonText: "¡Entendido!"
+});
+		</script>
+	{% endif %}
+	<div class="container-fluid">
+
+		<div class="row justify-content-center bg-light">
+			<div class="col-12 col-md-4">
+				<h1 class="h3 my-3 font-weight-normal text-center text-uppercase">Editar administrador</h1>
+				<div class="text-center">
+					<img onerror="this.onerror=null;this.src='/img/profile-default.png';" src="{{admin.image != '' ? "/uploads/profile-pictures/#{admin.image}":'/img/profile-default.png'}}" width="150" class="border img-fluid rounded-circle" alt="Avatar default" loading="lazy"/>
+					<p class="fw-bold mb-4 mt-2">{{admin.email}}</p>
+				</div>
+				{% for message in app.flashes('success') %}
+					<div class="flash-notice alert alert-success my-4">
+						<span class="form-error-icon badge badge-success text-uppercase">Éxito</span>
+						{{ message }}
+					</div>
+				{% endfor %}
+				{{ include('admin/super_admin/_form.html.twig', {'button_label': 'Actualizar'}) }}
+
+			</div>
+		</div>
+
+	</div>
+
+
 {% endblock %}

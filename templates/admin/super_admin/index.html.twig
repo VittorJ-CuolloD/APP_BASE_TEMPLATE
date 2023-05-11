@@ -1,30 +1,20 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Home dashboard
+{% block title %}Administradores
 {% endblock %}
 
 {% block body %}
 
-	<div class="container-fluid my-3 p-4 page">
+	<div class="container-fluid mb-5">
 
-		<div>
-
-			<nav aria-label="breadcrumb bg-light">
-				<ol class="breadcrumb">
-					<li class="breadcrumb-item">
-						<a href="{{path("admin_index")}}" class="text-success">Home</a>
-					</li>
-					<li class="breadcrumb-item active" aria-current="page">Administradores</li>
-				</ol>
-			</nav>
-
-		</div>
-		<h1 class="text-center text-uppercase mb-5">Administradores</h1>
+		<h1 class="h3 my-3 font-weight-normal text-center text-uppercase">Administradores</h1>
 
 		<div class="action-buttons">
 			<a href="{{ path('admin_manager_new') }}" class="btn btn-outline-success float-start">
+				<i class="fas fa-plus"></i>
 				Registrar Administrador</a>
 			<a href="{{ path('admin_manager_excel') }}" class="btn btn-outline-success float-end ms-3">
+				<i class="fas fa-file-excel"></i>
 
 				Excel</a>
 		</div>
@@ -55,32 +45,29 @@
 							<td>
 								{% if admin.active %}
 
-									<a type="button" href="{{ path('admin_manager_disable',{'id':admin.id}) }}" class="btn btn-success bt-sm btn-floating mx-auto d-flex align-items-center justify-content-center">
+									<a type="button" href="{{ path('admin_manager_disable',{'id':admin.id}) }}" class="btn btn-sm btn-success btn-floating mx-auto d-flex align-items-center justify-content-center">
 										<span>
 											<i class="fas fa-check"></i>
 										</span>
 									</a>
 								{% else %}
-									<a type="button" href="{{ path('admin_manager_enable',{'id':admin.id}) }}" class="btn btn-danger bt-sm btn-floating mx-auto d-flex align-items-center justify-content-center">
+									<a type="button" href="{{ path('admin_manager_enable',{'id':admin.id}) }}" class="btn btn-sm btn-danger btn-floating mx-auto d-flex align-items-center justify-content-center">
 										<i class="fas fa-close"></i>
 									</a>
 								{% endif %}
 							</td>
 							<td>
-								<div class='row'>
-									<div class='col-4'>
-										<a type="button" class="btn btn-outline-primary w-100" data-mdb-ripple-color="dark">
-											Ver
-										</a>
-									</div>
-									<div class='col-4'>
-										<a type="button" class="btn btn-outline-warning w-100" data-mdb-ripple-color="dark">
-											Editar
-										</a>
-									</div>
-									<div class='col-4'>
-										{% include 'admin/super_admin/_delete_form.html.twig' %}
-									</div>
+
+								<div class='d-flex justify-content-center gap-1'>
+									<a href="{{ path('admin_manager_show',{'id':admin.id}) }}" class="btn btn-sm btn-primary btn-floating d-flex align-items-center justify-content-center" data-mdb-ripple-color="dark">
+										<i class="fas fa-eye"></i>
+									</a>
+
+									<a href="{{ path('admin_manager_edit',{'id':admin.id}) }}" class="btn btn-sm btn-warning btn-floating d-flex align-items-center justify-content-center" data-mdb-ripple-color="dark">
+										<i class="fas fa-pencil"></i>
+									</a>
+
+									{% include 'admin/super_admin/_delete_form.html.twig' %}
 								</div>
 							</td>
 						</tr>

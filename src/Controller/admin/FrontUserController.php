@@ -68,6 +68,7 @@ class FrontUserController extends AbstractController
      */
     public function admin_user_show(User $user): Response
     {
+
         return $this->render('admin/front_user/show.html.twig', [
             'user' => $user,
         ]);

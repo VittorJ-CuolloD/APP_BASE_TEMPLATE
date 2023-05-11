@@ -1,4 +1,26 @@
-{{ form_start(form,{'attr': {'class': 'form-box w-25 mx-auto'}}) }}
-{{ form_widget(form) }}
-<button class="btn btn-outline-success">{{ button_label|default('Registrar') }}</button>
+{{ form_start(form,{'attr':{'class':'border bg-white g-opacity-50 rounded-5 p-4 mx-auto'}}) }}
+
+{{ form_errors(form) }}
+
+<div class="form-outline mb-4">
+	{{ form_widget(form.name) }}
+	{{ form_label(form.name, 'Nombre', {'label_attr': {'class': 'form-label'}}) }}
+
+</div>
+<div class="form-outline mb-4">
+	{{ form_widget(form.email) }}
+	{{ form_label(form.email, 'E-MAIL', {'label_attr': {'class': 'form-label'}}) }}
+</div>
+<div class="form-outline mb-4">
+	{{ form_widget(form.password) }}
+	{{ form_label(form.password, 'Contraseña', {'label_attr': {'class': 'form-label'}}) }}
+</div>
+<div class="mb-4">
+	{{ form_label(form.image, 'Imágenes con la extención (PNG,JPEG)', {'label_attr': {'class': 'form-label'}}) }}
+	{{ form_widget(form.image,{'attr': {'class': 'form-control','lang': 'es'}}) }}
+</div>
+<div class="d-flex justify-content-end">
+	<button class="btn btn-outline-success">{{ button_label|default('Registrar') }}</button>
+</div>
+
 {{ form_end(form) }}

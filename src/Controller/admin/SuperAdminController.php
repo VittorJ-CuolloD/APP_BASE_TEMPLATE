@@ -11,12 +11,38 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
  * @Route("/admin/manager")
  */
 class SuperAdminController extends AbstractController
 {
+
+    public static function upload_image($imageFile)
+    {
+        if ($imageFile) {
+            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            // this is needed to safely include the file name as part of the URL
+            $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+
+            // Move the file to the directory where brochures are stored
+            try {
+                $imageFile->move(
+                    $this->getParameter('brochures_directory'),
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                // ... handle exception if something happens during file upload
+            }
+
+
+            return $newFilename;
+        }
+
+        return null;
+    }
+
     /**
      * @Route("/", name="admin_manager_index", methods={"GET"})
      */
@@ -46,7 +72,7 @@ class SuperAdminController extends AbstractController
             $encodedPass = $encoder->encodePassword($admin, $form['password']->getData());
             $admin->setPassword($encodedPass);
             $admin->setActive(1);
-            $admin->setRoles(['ROLE_SUPERADMIN']);
+            $admin->setRoles(['ROLE_ADMIN']);
             $admin->setImage('');
             $admin->setImageSize(0);
             $admin->setUpdatedAt(new DateTime());
@@ -102,6 +128,19 @@ class SuperAdminController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $imageFile = $form->get('image')->getData();
+
+            if (!is_null($imageFile)) {
+                $fileSize = $imageFile->getSize();
+                $imageUpload = $this->upload_image($imageFile);
+
+                if (!is_null($imageUpload)) {
+                    $admin->setImage($imageUpload);
+                    $admin->setImageSize($fileSize);
+                }
+            }
+
             $admin->setUpdatedAt(new \DateTime());
             if ($form['password']->getData() != null) {
                 $encodedPass = $encoder->encodePassword($admin, $form['password']->getData());
