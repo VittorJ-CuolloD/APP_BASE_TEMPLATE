@@ -17,7 +17,7 @@
 </div>
 <div class="mb-4">
 	{{ form_label(form.image, 'Imágenes con la extención (PNG,JPEG)', {'label_attr': {'class': 'form-label'}}) }}
-	{{ form_widget(form.image,{'attr': {'class': 'form-control','lang': 'es'}}) }}
+	{{ form_widget(form.image,{'attr': {'class': 'form-control','lang': 'es',"accept": ".png,.jpg,.jpeg"}}) }}
 </div>
 <div class="d-flex justify-content-end">
 	<button class="btn btn-outline-success">{{ button_label|default('Registrar') }}</button>
