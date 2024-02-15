@@ -4,8 +4,11 @@ namespace App\Controller\admin;
 
 use App\Entity\Admin;
 use App\Form\Admin\AdminType;
+use App\Repository\AdminRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +22,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class AdminController extends AbstractController
 {
 
-    public function upload_image($imageFile)
+    public function upload_image($imageFile, ContainerInterface $container)
     {
         if ($imageFile) {
             $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
@@ -29,7 +32,7 @@ class AdminController extends AbstractController
             // Move the file to the directory where brochures are stored
             try {
                 $imageFile->move(
-                    $this->getParameter('brochures_directory'),
+                    $container->getParameter('brochures_directory'),
                     $newFilename
                 );
             } catch (FileException $e) {
@@ -41,6 +44,38 @@ class AdminController extends AbstractController
         }
 
         return null;
+    }
+
+
+    /**
+     * @Route("/delete-image/{id}", name="delete_image", methods={"POST"})
+     */
+    public function delete_image(Admin $admin, AdminRepository $adminRepository): Response
+    {
+        try {
+
+            if($admin->getImage() != ''){
+
+                $filesystem = new Filesystem();
+                $rutaCompleta = $this->getParameter('brochures_directory') . '/' . $admin->getImage();
+
+                if ($filesystem->exists($rutaCompleta)) 
+                    $filesystem->remove($rutaCompleta);
+
+                $admin->setImage('');
+                $admin->setImageSize(0);
+
+                $adminRepository->add($admin,true);
+
+            }
+
+            return new Response('0');
+
+        } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $th) {
+
+            return new Response('1');
+        }
+
     }
 
     /**
@@ -83,11 +118,12 @@ class AdminController extends AbstractController
     /**
      * @Route("/edit", name="admin_edit", methods={"GET", "POST"})
      */
-    public function admin_edit(HttpFoundationRequest $request, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder): Response
+    public function admin_edit(AdminRepository $adminRepository,ContainerInterface $container, HttpFoundationRequest $request, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder): Response
     {
 
         $idAdmin = $this->getUser()->getId();
         $admin = $em->getRepository(Admin::class)->find($idAdmin);
+        $originalPassword = $admin->getPassword();
         $form = $this->createForm(AdminType::class, $admin);
         $form->handleRequest($request);
 
@@ -97,22 +133,39 @@ class AdminController extends AbstractController
 
             if (!is_null($imageFile)) {
                 $fileSize = $imageFile->getSize();
-                $imageUpload = $this->upload_image($imageFile);
+                $imageUpload = $this->upload_image($imageFile, $container);
 
                 if (!is_null($imageUpload)) {
+
+                    if($admin->getImage() != ''){
+                            
+                        $filesystem = new Filesystem();
+                        $rutaCompleta = $this->getParameter('brochures_directory') . '/' . $admin->getImage();
+        
+                        if ($filesystem->exists($rutaCompleta)) 
+                            $filesystem->remove($rutaCompleta);
+        
+                        $admin->setImage('');
+                        $admin->setImageSize(0);
+            
+                    }
+                    
                     $admin->setImage($imageUpload);
                     $admin->setImageSize($fileSize);
                 }
             }
 
             $admin->setUpdatedAt(new \DateTime());
-            if ($form['password']->getData() != null) {
+            
+            if (!empty($form['password']->getData() != '')) {
                 $encodedPass = $encoder->encodePassword($admin, $form['password']->getData());
                 $admin->setPassword($encodedPass);
-            } else {
-                $admin->setPassword($admin->getPassword());
+            } else{
+                $admin->setPassword($originalPassword);
             }
-            $em->flush();
+
+            $adminRepository->add($admin,true);
+
             $this->addFlash('success', 'Se ha editado exitosamente');
             return $this->redirectToRoute('admin_edit', [], Response::HTTP_SEE_OTHER);
         }

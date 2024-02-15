@@ -1,27 +1,15 @@
 {% extends 'admin/base.html.twig' %}
-{% block title %}Editar Usuario
+{% block title %}{{ 'Edit #%text%' | trans({ '%text%': user.id },null, lang) }}
 {% endblock %}
-
+{% block header %}
+	{{ 'Edit #%text%' | trans({ '%text%': user.id },null, lang) }}
+{% endblock %}
 {% block body %}
-	{% if error_edit %}
-		<script>
-			Swal.fire({
-icon: 'error',
-title: '¡Error!',
-text: '{{ error_edit }}',
-confirmButtonColor: "var(--color-green)",
-confirmButtonText: "¡Entendido!"
-});
-		</script>
-	{% endif %}
 
 	<div class="container-fluid">
-
-		<div class="row justify-content-center bg-light">
+		<div class="row justify-content-center">
 			<div class="col-12 col-md-4">
-				<h1 class="h3 my-3 font-weight-normal text-center text-uppercase">Editar usuario</h1>
-
-				{{ include('admin/front_user/_form.html.twig', {'button_label': 'Actualizar'}) }}
+				{{ include('admin/front_user/_form.html.twig', {'button_label': 'updated'|trans}) }}
 			</div>
 		</div>
 	</div>

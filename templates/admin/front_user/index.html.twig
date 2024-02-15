@@ -1,48 +1,63 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Usuarios
-{% endblock %}
+{% block title %}
 
+	{{ 'Users'|trans({},null, lang) }}
+
+{% endblock %}
+{% block header %}
+
+	{{ 'Users'|trans({},null, lang) }}
+
+{% endblock %}
 {% block body %}
 
-	<div class="container-fluid mb-5">
+	{% include 'admin/includes/message_response.html.twig' %}
 
-		<h1 class="h3 my-3 font-weight-normal text-center text-uppercase">Usuarios</h1>
-
-
+	<div class="mb-5">
 		<div class="action-buttons">
-
 			<div>
 				<a href="{{ path('admin_user_new') }}" class="btn btn-outline-success float-start">
 					<i class="fas fa-plus"></i>
-					Registrar Usuario</a>
+					{{ 'New'|trans({},null, lang) }}</a>
 				<a href="{{ path('admin_user_excel') }}" class="btn btn-outline-success float-end ms-3">
 					<i class="fas fa-file-excel"></i>
-					Excel</a>
+					{{ 'Excel'|trans({},null, lang) }}</a>
 			</div>
 		</div>
 
-		<div class="table-container" id="datatable">
+		<div class="table-container datatable datatable-hover datatable-bordered datatable-sm datatable-striped" id="datatable">
 			<table class="table table-sm">
 				<thead>
 					<tr>
-						<th>ID</th>
-						<th>Nombre</th>
-						<th>Email</th>
-						<th>Roles</th>
-						<th>Registro</th>
-						<th>Última Actualización</th>
-						<th>Activo</th>
-						<th>Acciones</th>
+						<th>{{ 'Name'|trans({},null, lang) }}</th>
+						<th>{{ 'Roles'|trans({},null, lang) }}</th>
+						<th>{{ 'Registration date'|trans({},null, lang) }}</th>
+						<th>{{ 'Updated date'|trans({},null, lang)}}</th>
+						<th>{{ 'Active'|trans({},null, lang) }}</th>
+						<th>{{ 'Actions'|trans({},null, lang) }}</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for user in users %}
 						<tr>
-							<td>{{ user.id }}</td>
-							<td>{{ user.name }}</td>
-							<td>{{ user.email }}</td>
-							<td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+
+							<td>
+								<div class="small text-start">
+									{{ user.name ~ ' ' ~ user.surname }}
+									<br>
+									<b class="user-select-all">{{ user.email }}</b>
+								</div>
+							</td>
+							<td>
+								{% if user.roles  %}
+
+									{% for item in user.roles %}
+										<span class="badge badge-primary small">{{item|replace({"ROLE_": ""})}}</span>
+									{% endfor %}
+
+								{% endif %}
+							</td>
 							<td>{{ user.registeredAt ? user.registeredAt|date('d-m-Y H:i:s') : '' }}</td>
 							<td>{{ user.updatedAt ? user.updatedAt|date('d-m-Y H:i:s') : '' }}</td>
 							<td>
@@ -60,11 +75,11 @@
 							<td>
 								<div class='d-flex justify-content-center gap-1'>
 
-									<a href="{{ path('admin_user_show',{'id':user.id}) }}" class="btn btn-sm btn-primary btn-floating d-flex align-items-center justify-content-center" data-mdb-ripple-color="dark">
+									<a href="{{ path('admin_user_show',{'id':user.id}) }}" class="btn btn-sm btn-outline-success float-start">
 										<i class="fas fa-eye"></i>
 									</a>
 
-									<a href="{{ path('admin_user_edit',{'id':user.id}) }}" class="btn btn-sm btn-warning btn-floating d-flex align-items-center justify-content-center" data-mdb-ripple-color="dark">
+									<a href="{{ path('admin_user_edit',{'id':user.id}) }}" class="btn btn-sm btn-outline-success float-start">
 										<i class="fas fa-pencil"></i>
 									</a>
 

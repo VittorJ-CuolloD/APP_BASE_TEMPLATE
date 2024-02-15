@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Repository\AnswerRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -9,6 +11,18 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+
+ /**
+     * @Route("/", name="user_login_home")
+     */
+    public function user_login_home(AuthenticationUtils $authenticationUtils): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('user_login');
+        }
+        return $this->redirectToRoute('user_login');
+    }
+
     /**
      * @Route("/page", name="user_login")
      */

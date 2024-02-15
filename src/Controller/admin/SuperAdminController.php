@@ -4,9 +4,12 @@ namespace App\Controller\admin;
 
 use App\Entity\Admin;
 use App\Form\Admin\AdminType;
+use App\Repository\AdminRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,7 +22,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 class SuperAdminController extends AbstractController
 {
 
-    public static function upload_image($imageFile)
+    public static function upload_image($imageFile, ContainerInterface $container)
     {
         if ($imageFile) {
             $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
@@ -29,7 +32,7 @@ class SuperAdminController extends AbstractController
             // Move the file to the directory where brochures are stored
             try {
                 $imageFile->move(
-                    $this->getParameter('brochures_directory'),
+                    $container->getParameter('brochures_directory'),
                     $newFilename
                 );
             } catch (FileException $e) {
@@ -58,27 +61,43 @@ class SuperAdminController extends AbstractController
     /**
      * @Route("/new", name="admin_manager_new", methods={"GET", "POST"})
      */
-    public function admin_manager_new(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder): Response
+    public function admin_manager_new(ContainerInterface $container, Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder): Response
     {
         $admin = new Admin();
         $form = $this->createForm(AdminType::class, $admin);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /*  if (is_null($form['imageFile']->getData())) {
-                $admin->setImage("Default.png");
-                $admin->setImageSize(1000);
-            } */
+
+            $imageFile = $form->get('image')->getData();
+
+            if (!is_null($imageFile)) {
+                $fileSize = $imageFile->getSize();
+                $imageUpload = $this->upload_image($imageFile, $container);
+
+                if (!is_null($imageUpload)) {
+                    $admin->setImage($imageUpload);
+                    $admin->setImageSize($fileSize);
+                }
+            }
+
             $encodedPass = $encoder->encodePassword($admin, $form['password']->getData());
             $admin->setPassword($encodedPass);
             $admin->setActive(1);
-            $admin->setRoles(['ROLE_ADMIN']);
-            $admin->setImage('');
-            $admin->setImageSize(0);
+
+            /*             if (!is_null($form['roles']->getData())) {
+                if(!empty($form['roles']->getData())){
+                    $aux = $form['roles']->getData();
+                    $admin->setRoles($aux);
+                }
+            } */
+
             $admin->setUpdatedAt(new DateTime());
             $admin->setRegisteredAt(new DateTime());
             $em->persist($admin);
             $em->flush();
+
+            $this->addFlash('success', 'Administrador generado correctamente.');
 
             return $this->redirectToRoute('admin_manager_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -122,8 +141,11 @@ class SuperAdminController extends AbstractController
     /**
      * @Route("/{id}/edit", name="admin_manager_edit", methods={"GET", "POST"})
      */
-    public function admin_manager_edit(Request $request, Admin $admin, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder): Response
+    public function admin_manager_edit(ContainerInterface $container, Request $request, Admin $admin, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder,AdminRepository $adminRepository): Response
     {
+
+        $originalPassword = $admin->getPassword();
+
         $form = $this->createForm(AdminType::class, $admin);
         $form->handleRequest($request);
 
@@ -133,22 +155,49 @@ class SuperAdminController extends AbstractController
 
             if (!is_null($imageFile)) {
                 $fileSize = $imageFile->getSize();
-                $imageUpload = $this->upload_image($imageFile);
+                $imageUpload = $this->upload_image($imageFile, $container);
 
                 if (!is_null($imageUpload)) {
+
+                    if($admin->getImage() != ''){
+
+                        $filesystem = new Filesystem();
+                        $rutaCompleta = $this->getParameter('brochures_directory') . '/' . $admin->getImage();
+        
+                        if ($filesystem->exists($rutaCompleta)) 
+                            $filesystem->remove($rutaCompleta);
+        
+                        $admin->setImage('');
+                        $admin->setImageSize(0);
+        
+        
+                    }
+
                     $admin->setImage($imageUpload);
                     $admin->setImageSize($fileSize);
                 }
             }
 
+            /*             if (!is_null($form['roles']->getData())) {
+                if(!empty($form['roles']->getData())){
+                    $aux = $form['roles']->getData();
+                    $admin->setRoles($aux);
+                }
+            } */
+
             $admin->setUpdatedAt(new \DateTime());
-            if ($form['password']->getData() != null) {
+
+            if (!empty($form['password']->getData() != '')) {
                 $encodedPass = $encoder->encodePassword($admin, $form['password']->getData());
                 $admin->setPassword($encodedPass);
-            } else {
-                $admin->setPassword($admin->getPassword());
+            } else{
+                $admin->setPassword($originalPassword);
             }
-            $em->flush();
+
+            $adminRepository->add($admin,true);
+
+
+            $this->addFlash('success', '¡El registro fue editado correctamente!');
 
             return $this->redirectToRoute('admin_manager_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -164,10 +213,31 @@ class SuperAdminController extends AbstractController
      */
     public function delete(Request $request, Admin $admin, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $admin->getId(), $request->request->get('_token'))) {
-            $em->remove($admin);
-            $em->flush();
+        try {
+
+            if ($this->isCsrfTokenValid('delete' . $admin->getId(), $request->request->get('_token'))) {
+                
+                $em->getRepository(Admin::class)->remove($admin, true);
+
+                if($admin->getImage() != ''){
+
+                    $filesystem = new Filesystem();
+                    $rutaCompleta = $this->getParameter('brochures_directory') . '/' . $admin->getImage();
+                    
+                    if ($filesystem->exists($rutaCompleta)) 
+                        $filesystem->remove($rutaCompleta);
+
+                }
+                        
+            }
+        } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $th) {
+
+            $this->addFlash('error_delete', 'Error FOREIGN KEY');
+
+            return $this->redirectToRoute('admin_manager_index', [], Response::HTTP_SEE_OTHER);
         }
+
+        $this->addFlash('success', '¡El registro fue eliminado correctamente!');
 
         return $this->redirectToRoute('admin_manager_index', [], Response::HTTP_SEE_OTHER);
     }

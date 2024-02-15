@@ -2,68 +2,102 @@
 
 namespace App\Entity;
 
-use App\Repository\AdminRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
- * @ORM\Entity(repositoryClass=AdminRepository::class)
+ * Admin
+ *
+ * @ORM\Table(name="admin")
+ * @ORM\Entity(repositoryClass="App\Repository\AdminRepository")
+ * @UniqueEntity(
+ * fields={"email"},
+ * errorPath="email",
+ * message="Este email ya existe. Por favor, introduzca una dirección de email válida."
+ *)
  */
-class Admin implements UserInterface, PasswordAuthenticatedUserInterface
+class Admin implements UserInterface, \Serializable
 {
     /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=250, nullable=false)
      */
     private $email;
 
     /**
-     * @ORM\Column(type="json")
-     */
-    private $roles = [];
-
-    /**
-     * @var string The hashed password
-     * @ORM\Column(type="string")
-     */
-    private $password;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $active;
-
-    /**
-     * @ORM\Column(type="string", length=255)
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=250, nullable=false)
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @var string The hashed password
+     * @ORM\Column(name="password", type="string", length=250, nullable=false)
+     */
+    private $password;
+
+    /**
+     * @ORM\Column(name="roles", type="json")
+     */
+    private $roles = [];
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="image", type="string", length=350)
      */
     private $image;
 
+
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="integer")
+     *
+     * @var int|null
      */
-    private $image_size;
+    private $imageSize;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="active", type="boolean", nullable=false, options={"default"="1"})
+     */
+    private $active = true;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $updated_at;
+    private $registeredAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    private $registered_at;
+    private $updatedAt;
+
+
+    public function __construct()
+    {
+        $this->roles = ["ROLE_ADMIN"];
+        $this->image = '';
+        $this->imageSize = 0;
+        $this->active = true;
+        $this->registeredAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+    }
+
 
     public function getId(): ?int
     {
@@ -82,90 +116,6 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
-
-    /**
-     * @deprecated since Symfony 5.3, use getUserIdentifier instead
-     */
-    public function getUsername(): string
-    {
-        return (string) $this->email;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * Returning a salt is only needed, if you are not using a modern
-     * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
-     *
-     * @see UserInterface
-     */
-    public function getSalt(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials()
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
-    }
-
-    public function getActive(): ?int
-    {
-        return $this->active;
-    }
-
-    public function setActive(int $active): self
-    {
-        $this->active = $active;
-
-        return $this;
-    }
-
     public function getName(): ?string
     {
         return $this->name;
@@ -178,51 +128,157 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param string $password
+     * @return $this
+     */
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
     public function getImage(): ?string
     {
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage(?string $image): self
     {
         $this->image = $image;
 
         return $this;
     }
 
-    public function getImageSize(): ?float
+    public function setImageSize(?int $imageSize): void
     {
-        return $this->image_size;
+        $this->imageSize = $imageSize;
     }
 
-    public function setImageSize(float $image_size): self
+    public function getImageSize(): ?int
     {
-        $this->image_size = $image_size;
+        return $this->imageSize;
+    }
+
+    public function getRegisteredAt(): ?\DateTimeInterface
+    {
+        return $this->registeredAt;
+    }
+
+    public function setRegisteredAt(?\DateTimeInterface $registeredAt): self
+    {
+        $this->registeredAt = $registeredAt;
 
         return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getRegisteredAt(): ?\DateTimeInterface
+    public function getActive(): ?bool
     {
-        return $this->registered_at;
+        return $this->active;
     }
 
-    public function setRegisteredAt(\DateTimeInterface $registered_at): self
+    public function setActive(bool $active): self
     {
-        $this->registered_at = $registered_at;
+        $this->active = $active;
 
         return $this;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUsername(): string
+    {
+        return (string)$this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getSalt()
+    {
+        // not needed when using the "bcrypt" algorithm in security.yaml
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->email,
+            $this->name,
+            $this->password,
+            $this->roles,
+            $this->image,
+            $this->active,
+            $this->registeredAt,
+            $this->updatedAt
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->email,
+            $this->name,
+            $this->password,
+            $this->roles,
+            $this->image,
+            $this->active,
+            $this->registeredAt,
+            $this->updatedAt
+            ) = unserialize($serialized);
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
     }
 }

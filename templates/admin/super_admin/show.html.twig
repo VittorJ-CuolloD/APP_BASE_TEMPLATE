@@ -1,60 +1,62 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Admin |
-	{{ admin.name }}
+{% block title %}{{ 'Details #%text%' | trans({ '%text%': admin.id },null, lang) }}
 {% endblock %}
-
+{% block header %}{{ 'Details #%text%' | trans({ '%text%': admin.id },null, lang) }}
+{% endblock %}
 {% block body %}
 
 	<div class="container-fluid">
 
-		<h1 class="h3 my-3 font-weight-normal text-center text-uppercase">Detalles de la cuenta</h1>
+		
+<div class="text-center my-3">
+<img onerror="this.onerror=null;this.src='{{asset('assets/img/profile-default.png')}}';" src="{{admin.image != '' ? asset('assets/uploads/profile-pictures/' ~ admin.image):asset('assets/img/profile-default.png')}}" width="150" class="border img-fluid rounded-circle" alt="Avatar default" loading="lazy"/>
 
+</div>
 		<div class="d-flex justify-content-center">
-
 			<div class="col-12 col-md-6 rounded border">
 
+					
 				<ul class="list-group list-group-flush">
 					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 						<h6 class="fw-bold mb-0">
-							ID</h6>
+							{{ 'ID'|trans({},null, lang) }}</h6>
 						<span class="text-dark">#{{ admin.id }}</span>
 					</li>
 					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 						<h6 class="fw-bold mb-0">
-							Email</h6>
+							{{ 'Email'|trans({},null, lang) }}</h6>
 						<span class="text-dark">{{ admin.email }}</span>
 					</li>
 					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 						<h6 class="fw-bold mb-0">
-							Nombre</h6>
+							{{ 'Name'|trans({},null, lang) }}</h6>
 						<span class="text-dark">{{ admin.name }}</span>
 					</li>
 					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 						<h6 class="fw-bold mb-0">
-							Activo</h6>
+							{{ 'State'|trans({},null, lang) }}</h6>
 						<span class="text-dark">
 							{% if admin.active %}
-
-								<span class="badge rounded-pill badge-success">Activo</span>
+								<span class="badge rounded-pill badge-success">{{ 'active'|trans({},null, lang) }}</span>
 							{% else %}
-								<span class="badge rounded-pill badge-danger">Inactivo</span>
+								<span class="badge rounded-pill badge-danger">{{ 'inactive'|trans({},null, lang) }}</span>
 							{% endif %}
 						</span>
 					</li>
 					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 						<h6 class="fw-bold mb-0">
-							Roles</h6>
+							{{ 'Roles'|trans({},null, lang) }}</h6>
 						<span class="text-dark">{{ admin.roles ? admin.roles|json_encode : '' }}</span>
 					</li>
 					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 						<h6 class="fw-bold mb-0">
-							Fecha de registro</h6>
+							{{ 'Registered date'|trans({},null, lang) }}</h6>
 						<span class="text-dark">{{ admin.registeredAt ? admin.registeredAt|date('d/m/Y H:i:s') : '' }}</span>
 					</li>
 					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 						<h6 class="fw-bold mb-0">
-							Fecha de actualización</h6>
+							{{ 'Updated date'|trans({},null, lang) }}</h6>
 						<span class="text-dark">{{ admin.updatedAt ? admin.updatedAt|date('d/m/Y H:i:s') : '' }}</span>
 					</li>
 

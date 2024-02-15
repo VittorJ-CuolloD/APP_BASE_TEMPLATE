@@ -27,36 +27,66 @@ class FrontUserController extends AbstractController
     public function admin_user_index(UserRepository $userRepository): Response
     {
 
+        $users = $userRepository->findAll();
+
+        $data = [];
+
+        foreach ($users as $key => $item) {
+
+            $data[] = [
+                'id' => $item->getId(),
+                'name' => $item->getName(),
+                'surname' => $item->getSurname(),
+                'email' => $item->getEmail(),
+                'active' => $item->isActive(),
+                'roles' => $item->getRoles(),
+                'registeredAt' => $item->getRegisteredAt()->format('Y-m-d H:i:s'),
+                'updatedAt' => $item->getUpdatedAt()->format('Y-m-d H:i:s')
+            ];
+        }
+
         return $this->render('admin/front_user/index.html.twig', [
-            'users' => $userRepository->findAll(),
+            'users' => $data,
         ]);
     }
 
     /**
      * @Route("/new", name="admin_user_new", methods={"GET", "POST"})
      */
-    public function admin_user_new(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $encoder): Response
+    public function admin_user_new( Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $encoder): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
+    
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $emailGetVerification = $userRepository->findOneBy(['email' => $form['email']->getData()]);
+
+            if ($emailGetVerification != null) {
+                $this->addFlash('error', 'Email ya existe.');
+
+                return $this->render('admin/front_user/new.html.twig', [
+                    'form' => $form->createView(),
+                ]);
+            }
+
             $encodedPass = $encoder->encodePassword($user, $form['password']->getData());
             $user->setPassword($encodedPass);
-
-
-            $user->setActive(1);
+            $user->setIsActive(1);
             $user->setUpdatedAt(new DateTime());
             $user->setRegisteredAt(new DateTime());
             $user->setToken('');
 
-
-
             $userRepository->add($user, true);
+
+            $this->addFlash('success', 'Equipo generado correctamente.');
+
             return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
+      
         return $this->renderForm('admin/front_user/new.html.twig', [
             'user' => $user,
             'form' => $form,
@@ -69,8 +99,18 @@ class FrontUserController extends AbstractController
     public function admin_user_show(User $user): Response
     {
 
+        $data = [
+            'id' => $user->getId(),
+            'name' => $user->getName(),
+            'email' => $user->getEmail(),
+            'active' => $user->isActive(),
+            'roles' => $user->getRoles(),
+            'registeredAt' => $user->getRegisteredAt()->format('Y-m-d H:i:s'),
+            'updatedAt' => $user->getUpdatedAt()->format('Y-m-d H:i:s')
+        ];
+
         return $this->render('admin/front_user/show.html.twig', [
-            'user' => $user,
+            'user' => $data,
         ]);
     }
 
@@ -91,6 +131,9 @@ class FrontUserController extends AbstractController
                 $user->setPassword($user->getPassword());
             }
             $userRepository->add($user, true);
+
+            $this->addFlash('success', '¡El registro fue editado correctamente!');
+
             return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -106,7 +149,8 @@ class FrontUserController extends AbstractController
      */
     public function admin_user_disable(EntityManagerInterface $em, User $user): Response
     {
-        $user->setActive(false);
+
+        $user->setIsActive(false);
         $em->flush();
         return $this->redirectToRoute("admin_user_index");
     }
@@ -116,7 +160,7 @@ class FrontUserController extends AbstractController
      */
     public function admin_user_enable(EntityManagerInterface $em, User $user): Response
     {
-        $user->setActive(true);
+        $user->setIsActive(true);
         $em->flush();
         return $this->redirectToRoute("admin_user_index");
     }
@@ -126,9 +170,18 @@ class FrontUserController extends AbstractController
      */
     public function admin_user_delete(Request $request, User $user, UserRepository $userRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
-            $userRepository->remove($user, true);
+
+        try {
+            if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
+                $userRepository->remove($user, true);
+            }
+        } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $th) {
+
+            $this->addFlash('error_delete', 'Error FOREIGN KEY');
+
+            return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
         }
+        $this->addFlash('success', '¡El registro fue eliminado correctamente!');
 
         return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
     }

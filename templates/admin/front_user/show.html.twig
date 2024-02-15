@@ -1,60 +1,58 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Usuario |
-	{{ user.name }}
-{% endblock %}
+{% block title %}	{{ 'Details #%text%' | trans({ '%text%': user.id },null, lang) }}
 
+{% endblock %}
+{% block header %}
+	{{ 'Details #%text%' | trans({ '%text%': user.id },null, lang) }}
+
+{% endblock %}
 {% block body %}
 
 	<div class="container-fluid">
 
-		<h1 class="text-center text-uppercase my-5">Detalles de la cuenta</h1>
-
+		
 		<div class="d-flex justify-content-center">
 
 			<div class="col-12 col-md-6 rounded border">
 
 				<ul class="list-group list-group-flush">
+					
 					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 						<h6 class="fw-bold mb-0">
-							ID</h6>
-						<span class="text-dark">#{{ user.id }}</span>
-					</li>
-					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-						<h6 class="fw-bold mb-0">
-							Email</h6>
+							{{'Email'|trans({},null, lang)}}</h6>
 						<span class="text-dark">{{ user.email }}</span>
 					</li>
 					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 						<h6 class="fw-bold mb-0">
-							Nombre</h6>
+							{{'Name'|trans({},null, lang)}}</h6>
 						<span class="text-dark">{{ user.name }}</span>
 					</li>
 					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 						<h6 class="fw-bold mb-0">
-							Activo</h6>
+							{{'State'|trans({},null, lang)}}</h6>
 						<span class="text-dark">
 							{% if user.active %}
 
-								<span class="badge rounded-pill badge-success">Activo</span>
+								<span class="badge rounded-pill badge-success">{{'active'|trans({},null, lang)}}</span>
 							{% else %}
-								<span class="badge rounded-pill badge-danger">Inactivo</span>
+								<span class="badge rounded-pill badge-danger">{{'inactive'|trans({},null, lang)}}</span>
 							{% endif %}
 						</span>
 					</li>
 					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 						<h6 class="fw-bold mb-0">
-							Roles</h6>
+							{{'Roles'|trans({},null, lang)}}</h6>
 						<span class="text-dark">{{ user.roles ? user.roles|json_encode : '' }}</span>
 					</li>
 					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 						<h6 class="fw-bold mb-0">
-							Fecha de registro</h6>
+							{{'Registration date'|trans({},null, lang)}}</h6>
 						<span class="text-dark">{{ user.registeredAt ? user.registeredAt|date('d/m/Y H:i:s') : '' }}</span>
 					</li>
 					<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 						<h6 class="fw-bold mb-0">
-							Fecha de actualización</h6>
+							{{'Updated date'|trans({},null, lang)}}</h6>
 						<span class="text-dark">{{ user.updatedAt ? user.updatedAt|date('d/m/Y H:i:s') : '' }}</span>
 					</li>
 

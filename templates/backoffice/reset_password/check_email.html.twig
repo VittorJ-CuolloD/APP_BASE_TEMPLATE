@@ -1,0 +1,25 @@
+{% extends 'backoffice/base.html.twig' %}
+
+{% block title %}Password Reset Email Sent
+{% endblock %}
+
+{% block body %}
+
+	<div class="container-fluid h-100">
+		<div class=" row justify-content-center align-items-center bg-light h-100">
+			<div class="col-12 col-md-4">
+
+				<p>
+                Si existe una cuenta que coincide con tu correo electrónico, se acaba de enviar un correo electrónico que contiene un enlace que puedes utilizar para restablecer tu contraseña. <br><br>
+                Este enlace expirará en {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+				</p>
+				<p>Si no recibes un correo electrónico, por favor verifica tu carpeta de correo no deseado o <br><br>
+                 
+                <a href="{{ path('app_forgot_password_request') }}" class="btn btn-warning btn-sm">Inténtalo nuevamente</a>
+                    
+                </p>
+
+			</div>
+		</div>
+	</div>
+{% endblock %}

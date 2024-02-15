@@ -1,15 +1,16 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Crear Administrador
+{% block title %}{{ 'new_text' | trans({ '%text%': 'Administrator'|trans({},null, lang) },null, lang) }}
+{% endblock %}
+{% block header %}{{ 'new_text' | trans({ '%text%': 'Administrator'|trans({},null, lang) },null, lang) }}
 {% endblock %}
 
 {% block body %}
 
 	<div class="container-fluid">
-		<div class="row justify-content-center bg-light">
+		<div class="row justify-content-center">
 			<div class="col-12 col-md-4">
-				<h1 class="h3 my-3 font-weight-normal text-center text-uppercase">Registrar Administrador</h1>
-
+				
 				{{ include('admin/super_admin/_form.html.twig') }}
 			</div>
 		</div>

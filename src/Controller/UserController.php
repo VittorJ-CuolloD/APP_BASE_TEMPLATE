@@ -27,7 +27,7 @@ class UserController extends AbstractController
     /**
      * @Route("/register", name="app_user")
      */
-    public function index(Request $request, UserPasswordHasherInterface $passwordHasher): Response
+    public function index( Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
 
         $user = new User();
@@ -43,12 +43,16 @@ class UserController extends AbstractController
             if ($emailGetVerification != null) {
                 $this->addFlash('errorEmail', 'Email ya existe.');
 
-                return $this->redirectToRoute('app_user');
+                return $this->render('backoffice/register.html.twig', [
+                    'formulario' => $form->createView()
+                ]);
             }
 
             if ($form['password']['first']->getData() != $form['password']['second']->getData()) {
                 $this->addFlash('errorPasswordConfirm', 'Las contraseñas deben de ser iguales.');
-                return $this->redirectToRoute('app_user');
+                return $this->render('backoffice/register.html.twig', [
+                    'formulario' => $form->createView()
+                ]);
             }
 
             //DE NO EXISTIR REALIZAMOS EL HASH DE LA CONTRASEÑA Y LA ALMACENAMOS EN LA BASE DE DATOS:
@@ -61,11 +65,10 @@ class UserController extends AbstractController
 
             //SE PUEDE DEJAR EN BLANCO YA QUE POR DEFECTO SYMFONY TOMA LOS ROLES DE USUARIO COMO ROLE_USER SI NO SE LE ESPECIFICA:
             $user->setRoles(['ROLE_USER']);
-            $user->setActive(1);
+            $user->isActive(1);
             $user->setToken('');
             $user->setRegisteredAt(new DateTime());
             $user->setUpdatedAt(new DateTime());
-
             $this->em->persist($user);
             $this->em->flush();
             $this->addFlash('success', 'Se ha registrado exitosamente');
@@ -76,13 +79,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/home", name="app_user_home")
-     */
-    public function app_user_home(): Response
-    {
-        return $this->render('backoffice/index.html.twig');
-    }
+
 
     /**
      * @Route("/page/logout", name="user_logout")

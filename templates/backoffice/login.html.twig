@@ -52,23 +52,22 @@
 						</label>
 					</div>
 
-
-					{# <div class="mt-3 text-center">
-																<div
-																	class="col">
-																	<!-- Simple link -->
-																	<a href="#!">¡He olvidado mi contraseña!</a>
-																</div>
-										
-															</div> #}
-
 					<div class="mt-3 text-center">
 						<span class="txt-registro">¿Aún no te has registrado?
-							<a href="/register">Regístrate aquí</a>.</span>
+							<a href="{{ path('app_user') }}">Regístrate aquí</a>.</span>
 					</div>
 
 					<!-- Submit button -->
 					<button type="submit" class="btn btn-dark btn-block mx-auto mt-3">Entrar</button>
+
+					<div class="mt-3 text-center">
+						<div
+							class="col">
+							<!-- Simple link -->
+							<a href="{{ path('app_forgot_password_request') }}">¿No recuerdas tu contraseña?</a>
+						</div>
+
+					</div>
 
 					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
@@ -79,7 +78,7 @@
 		</div>
 	</div>
 
-	{% include "includes/legal.html.twig" %}
-	{% include "includes/cookies_consent.html" %}
+	{% include "backoffice/includes/legal.html.twig" %}
+	{% include "backoffice/includes/cookies_consent.html" %}
 
 {% endblock %}

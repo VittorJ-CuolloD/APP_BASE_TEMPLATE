@@ -1,0 +1,33 @@
+{% for flashMessage in app.flashes('success') %}
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Completado!',
+            text: '{{ flashMessage }}',
+            showConfirmButton: false,
+            timer:3000
+        });
+    </script>
+{% endfor %}
+{% for flashMessage in app.flashes('error_delete') %}
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: '¡Error!',
+            text: '{{ flashMessage }}',
+            showConfirmButton: false,
+            timer:3000
+        });
+    </script>
+{% endfor %}
+{% for flashMessage in app.flashes('error') %}
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: '¡Error!',
+            text: '{{ flashMessage }}',
+            showConfirmButton: false,
+            timer:3000
+        });
+    </script>
+{% endfor %}

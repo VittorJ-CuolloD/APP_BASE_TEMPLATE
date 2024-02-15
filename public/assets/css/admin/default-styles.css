@@ -1,0 +1,54 @@
+:root {
+	--color-gray: #f8f8f2;
+	--color-green: #009845;
+	--color-darkgreen: #02391c;
+	--color-white: #ffffff;
+	--color-dark: #332d2d;
+}
+
+html,
+body {
+	height: 85vh;
+}
+
+.datatable-sort-icon{
+	color: white;
+}
+
+.datatable table td,
+.datatable table th {
+	text-align: center !important;
+	vertical-align: middle;
+	font-weight: 700;
+}
+
+.datatable table th {
+	text-transform: uppercase;
+}
+
+.datatable thead .fixed-cell {
+	background-color: var(--color-green) !important;
+	color: white !important;
+}
+
+.alert {
+	padding-block: 0.8rem !important;
+}
+
+.border-top-left {
+	border-top-right-radius: 0.5rem !important;
+}
+
+.border-top-right {
+	border-top-left-radius: 0.5rem !important;
+}
+/* footer {
+    position: fixed;
+    height: 100px;
+    bottom: 0;
+    width: 100%;
+} */
+
+/* .bg-success,.btn-success{
+    background-color: var(--color-green) !important;
+} */

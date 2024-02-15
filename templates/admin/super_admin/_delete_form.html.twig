@@ -1,6 +1,6 @@
 <form method='post' action='{{ path('admin_manager_delete', {'id': admin.id}) }}'>
 	<input type='hidden' name='_token' value='{{ csrf_token('delete' ~ admin.id) }}'>
-	<button type="submit" class="btn btn-sm btn-danger btn-floating" data-mdb-ripple-color="dark">
+	<button type="submit" class="btn btn-sm btn-outline-danger">
 		<i class="fas fa-trash"></i>
 	</button>
 </form>

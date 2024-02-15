@@ -1,21 +1,33 @@
 {{ form_start(form,{'attr':{'class':'border bg-white g-opacity-50 rounded-5 p-4 mx-auto'}}) }}
 
-<div class="form-outline">
-	<div class="form-outline mb-4">
-		{{ form_widget(form.name) }}
-		{{ form_label(form.name, 'Nombre', {'label_attr': {'class': 'form-label'}}) }}
+{% include 'admin/includes/message_response.html.twig' %}
+	
+<div class="form-outline mb-4">
+	{{ form_widget(form.name) }}
+	{{ form_label(form.name, 'Name'|trans({},null, lang), {'label_attr': {'class': 'form-label'}}) }}
 
-	</div>
-	<div class="form-outline mb-4">
-		{{ form_widget(form.email) }}
-		{{ form_label(form.email, 'E-MAIL', {'label_attr': {'class': 'form-label'}}) }}
-	</div>
-	<div class="form-outline mb-4">
-		{{ form_widget(form.password) }}
-		{{ form_label(form.password, 'Contraseña', {'label_attr': {'class': 'form-label'}}) }}
-	</div>
-	<div class="d-flex justify-content-end">
-		<button class="btn btn-outline-success">{{ button_label|default('Registrar') }}</button>
-	</div>
 </div>
+<div class="form-outline mb-4">
+	{{ form_widget(form.email) }}
+	{{ form_label(form.email, 'Email'|trans({},null, lang), {'label_attr': {'class': 'form-label'}}) }}
+</div>
+{# <div class="form-outline mb-4">
+	{{ form_widget(form.roles) }}
+</div> #}
+<div class="input-group mb-4">
+
+	{{ form_widget(form.password,{'attr': {'class': 'form-control form-icon-trailing','placeholder':'Password'|trans({},null, lang)}}) }}
+ 	
+	<span class="input-group-text ">
+		<a onClick="changeTypePassword(event)" class="btn btn-tertiary" id="change-type-password" data-mdb-ripple-color="light"><i class="far fa-eye text-dark"></i></a>
+	</span>
+	<button onClick="createPassword(event)" class="btn btn-outline-success" type="button" data-mdb-ripple-color="dark">
+    	Generar
+  	</button>
+</div>
+
+<div class="d-flex justify-content-end">
+	<button class="btn btn-outline-success">{{ button_label|default('Registrar'|trans({},null, lang)) }}</button>
+</div>
+
 {{ form_end(form) }}

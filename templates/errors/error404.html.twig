@@ -1,0 +1,26 @@
+{% extends 'errors/base.html.twig' %}
+
+{% block title %}{{ 'error404'|trans({},null, lang) }}
+{% endblock %}
+
+{% block body %}
+	
+		<div id="notfound">
+			<div class="notfound">
+				<div class="notfound-404">
+					<h3 class="h6 fw-bold">{{ 'page_not_found'|trans({},null, lang) }}</h3>
+					<h1 class="d-flex">
+						<span>4</span>
+						<span>0</span>
+						<span>4</span>
+					</h1>
+				</div>
+				<h2 class="h4">{{ 'sorry_but_the_requested_page_was_not_found'|trans({},null, lang) }}</h2>
+                <button type="button" onClick="window.history.back();"  class="btn btn-dark">
+				<i class="fas fa-chevron-left"></i>&nbsp;{{ 'go_back'|trans({},null, lang) }}
+				</button>
+
+			</div>
+		</div>
+	
+{% endblock %}

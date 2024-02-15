@@ -1,11 +1,13 @@
+{% set _route = app.request.attributes.get('_route') %}
+
 <!-- Navbar -->
 <nav
-	class="navbar navbar-expand-lg navbar-light bg-success">
+	class="navbar navbar-expand-lg navbar-dark bg-success">
 	<!-- Container wrapper -->
 	<div
 		class="container-fluid">
 		<!-- Toggle button -->
-		<button class="navbar-toggler text-white" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<button class="navbar-toggler " type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<i class="fas fa-bars"></i>
 		</button>
 
@@ -14,7 +16,7 @@
 			class="collapse navbar-collapse" id="navbarSupportedContent">
 			<!-- Navbar brand -->
 			<a class="navbar-brand mt-2 mt-lg-0" href="{{path('admin_index')}}">
-				<img src="{{ asset("img/doctaforum.png") }}" class="img-fluid" alt="MDB Logo" loading="lazy"/>
+				<img src="{{ asset("assets/img/doctaforum.png") }}" class="img-fluid" alt="MDB Logo" loading="lazy"/>
 			</a>
 
 
@@ -24,53 +26,103 @@
 				{% if is_granted('ROLE_ADMIN') %}
 
 					<li class="nav-item">
-						<a class="nav-link text-white" href="{{path('admin_index')}}">Inicio</a>
+						<a  class="nav-link {{_route == 'admin_index' ? 'active' : ''}}" href="{{path('admin_index')}}">{{ 'Home'|trans({},null, lang) }}</a>
 					</li>
 
 					<li class="nav-item">
-						<a class="nav-link text-white" href="{{path('admin_user_index')}}">Usuario</a>
+						<a class="nav-link {{_route == 'admin_user_index' ? 'active' : ''}}" href="{{path('admin_user_index')}}">{{ 'Teams'|trans({},null, lang) }}</a>
 					</li>
-
 				{% endif %}
 				{% if is_granted('ROLE_SUPERADMIN') %}
 
 					<li class="nav-item">
-						<a class="nav-link text-white" href="{{path('admin_manager_index')}}">Administradores</a>
+						<a class="nav-link {{_route == 'admin_manager_index' ? 'active' : ''}}" href="{{path('admin_manager_index')}}">{{ 'Administrators'|trans({},null, lang) }}</a>
 					</li>
 
 				{% endif %}
+
+				{#  {{ lang is defined ? lang : 'es'}}
+				
+								{{ 'Administrators'|trans({}, null, lang) }} #}
+
 			</ul>
 
-		</div>
-		<!-- Collapsible wrapper -->
-		{% if is_granted('ROLE_ADMIN') %}
+
 			<div>
-				<ul
-					class="navbar-nav">
-					<!-- Avatar -->
+				<ul class="navbar-nav">
+
+					{% if is_granted('ROLE_ADMIN') %}
+						<span class="navbar-text text-white small font-monospace">
+							{{ 'Welcome %email%!'|trans({'%email%': app.user.email},null, lang) }}
+						</span>
+					{% endif %}
+
+					<!-- IDIOMA -->
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-							<img onerror="this.onerror=null;this.src='/img/profile-default.png';" src="{{app.user.image != '' ? "/uploads/profile-pictures/#{app.user.image}":'/img/profile-default.png'}}" class="rounded-circle" height="22" alt="Avatar default" loading="lazy"/>
+							<i class="flag flag-{{ lang == 'en' ? 'united-states' : lang == 'pt' ? 'portugal' : 'spain'}}"></i>
+							{{ lang == 'en' ? 'english'|trans({}, null, lang) }}
+							{{ lang == 'es' ? 'spain'|trans({}, null, lang) }}
+							{{ lang == 'pt' ? 'portuguese'|trans({}, null, lang) }}
+							
 						</a>
 						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
 							<li>
-								<a class="dropdown-item" href="{{ path('admin_edit',{'id':app.user.id}) }}">
-									<i class="fas fa-user"></i>
-									&nbsp;Mi perfil</a>
+								<a class="dropdown-item" href="{{ path('app_language_switch',{'_idioma':'en'}) }}">
+									<i class="flag flag-united-states"></i>
+									{{ 'english'|trans({}, null, lang) }}
+								</a>
 							</li>
 
 							<li><hr class="dropdown-divider"/></li>
 							<li>
 
-								<a class="dropdown-item" href="{{ path('admin_logout') }}">
-									<i class="fas fa-power-off"></i>
-									&nbsp;Cerrar sesión</a>
+								<a class="dropdown-item" href="{{ path('app_language_switch',{'_idioma':'es'}) }}">
+									<i class="flag flag-spain"></i>
+									{{ 'spain'|trans({}, null, lang) }}
+								</a>
+							</li>
+							<li><hr class="dropdown-divider"/></li>
+							<li>
+
+								<a class="dropdown-item" href="{{ path('app_language_switch',{'_idioma':'pt'}) }}">
+									<i class="flag flag-portugal"></i>
+									{{ 'portuguese'|trans({}, null, lang) }}
+								</a>
 							</li>
 						</ul>
 					</li>
+
+					{% if is_granted('ROLE_ADMIN') %}
+
+						<!-- AVATAR -->
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+								<img onerror="this.onerror=null;this.src='{{ asset('assets/img/profile-default.png') }}';" src="{{app.user.image != '' ? asset("assets/uploads/profile-pictures/#{app.user.image}"):'/img/profile-default.png'}}" class="rounded-circle" height="22" alt="Avatar default" loading="lazy"/>
+							</a>
+							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+								<li>
+									<a class="dropdown-item" href="{{ path('admin_edit',{'id':app.user.id}) }}">
+										<i class="fas fa-user"></i>
+										&nbsp;{{ 'My profile'|trans({},null, lang) }}</a>
+								</li>
+
+								<li><hr class="dropdown-divider"/></li>
+								<li>
+
+									<a class="dropdown-item" href="{{ path('admin_logout') }}">
+										<i class="fas fa-power-off text-danger"></i>
+										&nbsp;{{ 'Logout'|trans({},null, lang) }}</a>
+								</li>
+							</ul>
+						</li>
+
+					{% endif %}
 				</ul>
 			</div>
-		{% endif %}
+
+		</div>
+
 	</div>
 	<!-- Container wrapper -->
 </nav>

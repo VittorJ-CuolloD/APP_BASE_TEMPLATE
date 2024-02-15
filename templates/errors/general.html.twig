@@ -1,0 +1,23 @@
+{% extends 'errors/base.html.twig' %}
+
+{% block title %}{{ 'error500'|trans({},null, lang) }}
+{% endblock %}
+
+{% block body %}
+	
+		<div id="notfound">
+			<div class="notfound">
+				<div class="notfound-404">
+					<h3 class="h6 fw-bold">{{ 'page_not_found_500'|trans({},null, lang) }}</h3>
+					<h1 class="d-flex">
+						<span>5</span>
+						<span>0</span>
+						<span>0</span>
+					</h1>
+				</div>
+				<h6>{{errorMessage}}</h6>
+				<h2 class="h4">{{ 'error_server_500'|trans({},null, lang) }}</h2>
+			</div>
+		</div>
+	
+{% endblock %}
